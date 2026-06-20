@@ -43,8 +43,3 @@ You must have the following installed in your WSL (Ubuntu) environment:
    - **Frontend UI:** `http://localhost:5173`
 
 > **Note:** The backend loads ~18MB of ML artifacts and spatial graphs into memory on boot. It may take 10-25 seconds before the endpoints become responsive.
-
-## Architecture & Agent Context
-
-If you are an AI agent or a developer looking to understand the core contracts and folder structure, please refer to:
-👉 **[`docs/model_context.md`](docs/model_context.md)**

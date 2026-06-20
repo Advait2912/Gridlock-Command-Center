@@ -10,8 +10,19 @@ interface BadgeProps {
 }
 
 export const Badge: React.FC<BadgeProps> = ({ children, variant = 'default', pulse = false }) => {
+  // Map old variants to new status-tag classes
+  const getStatusTagClass = () => {
+    switch (variant) {
+      case 'success': return 'status-tag-low';
+      case 'warning': return 'status-tag-medium';
+      case 'danger': return 'status-tag-high';
+      case 'info': return 'status-tag-low'; // Using low for info as placeholder
+      default: return '';
+    }
+  };
+  
   return (
-    <span className={`badge badge-${variant} ${pulse ? 'pulse-danger' : ''}`}>
+    <span className={`badge ${getStatusTagClass()} ${pulse ? 'pulse-danger' : ''}`}>
       {children}
     </span>
   );

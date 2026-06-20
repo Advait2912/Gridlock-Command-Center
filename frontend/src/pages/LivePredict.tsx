@@ -134,7 +134,7 @@ export const LivePredict: React.FC = () => {
                 <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Cause *</label>
                 <select name="event_cause" value={form.event_cause} onChange={handleChange} required style={inputStyle}>
                   <option value="">-- Select Cause --</option>
-                  {meta?.causes.map(c => <option key={c} value={c}>{c}</option>)}
+                  {meta?.causes.map(c => <option key={c} value={c}>{c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>)}
                 </select>
               </div>
 
@@ -175,7 +175,7 @@ export const LivePredict: React.FC = () => {
                   <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Vehicle Type</label>
                   <select name="veh_type" value={form.veh_type} onChange={handleChange} style={inputStyle}>
                     <option value="">Unknown</option>
-                    {meta?.veh_types.map(v => <option key={v} value={v}>{v}</option>)}
+                    {meta?.veh_types.map(v => <option key={v} value={v}>{v.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>)}
                   </select>
                 </div>
                 <div style={{ flex: 1 }}>
@@ -222,7 +222,22 @@ export const LivePredict: React.FC = () => {
           <h2 style={{ margin: 0, color: 'var(--text-primary)' }}>
             Live situation map <span style={{ color: 'var(--text-muted)' }}>{liveEvents.length ? `(${liveEvents.length} active)` : ''}</span>
           </h2>
-          <button className="btn-secondary" onClick={clearBoard}>Clear board</button>
+          <button 
+            onClick={clearBoard}
+            style={{
+              padding: 'var(--space-2) var(--space-4)',
+              background: 'transparent',
+              border: '1px solid var(--glass-border)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-display)',
+              fontSize: '12px',
+              fontWeight: 600,
+            }}
+          >
+            Clear board
+          </button>
         </div>
 
         <LiveBoardMap events={liveEvents} onMarkerClick={(id) => {

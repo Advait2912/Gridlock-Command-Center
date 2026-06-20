@@ -60,82 +60,99 @@ export const NewPredict: React.FC = () => {
         </p>
         <div className="glass-panel" style={{ padding: '1.5rem', overflowY: 'auto' }}>
           {metaLoading ? <LoadingSpinner message="Loading options..." /> : (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+              {/* ── Classification ── */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Event cause *</label>
-                <select name="event_cause" value={form.event_cause} onChange={handleChange} required style={inputStyle}>
-                  <option value="">Select...</option>
-                  {meta?.causes.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Zone *</label>
-                <select name="zone_filled" value={form.zone_filled} onChange={handleChange} required style={inputStyle}>
-                  <option value="">Select...</option>
-                  {meta?.zones.map(z => <option key={z} value={z}>{z}</option>)}
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Latitude *</label>
-                  <input type="number" step="0.0001" name="latitude" value={form.latitude} onChange={handleChange} required style={inputStyle} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Longitude *</label>
-                  <input type="number" step="0.0001" name="longitude" value={form.longitude} onChange={handleChange} required style={inputStyle} />
-                </div>
-              </div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
-                Auto-filled from zone centroid. Edit to pinpoint exact location.
-              </p>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Start date &amp; time (IST) *</label>
-                <input type="datetime-local" name="start_datetime" value={form.start_datetime} onChange={handleChange} required style={inputStyle} />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Description (optional)</label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={3} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Free text..."/>
-              </div>
-
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Vehicle Type (optional)</label>
-                  <select name="veh_type" value={form.veh_type} onChange={handleChange} style={inputStyle}>
-                    <option value="">Unknown</option>
-                    {meta?.veh_types.map(v => <option key={v} value={v}>{v}</option>)}
-                  </select>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Corridor (optional)</label>
-                  <input type="text" name="corridor" value={form.corridor} onChange={handleChange} placeholder="e.g. Outer Ring Road" style={inputStyle} />
-                </div>
-              </div>
-
-              <div style={{ background: 'rgba(0,0,0,0.1)', padding: '0.75rem', borderRadius: 'var(--radius-sm)' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={isStretch} onChange={(e) => setIsStretch(e.target.checked)} />
-                  Stretch event? (construction / water-logging segment)
-                </label>
-                
-                {isStretch && (
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem' }}>
+                <div className="eyebrow" style={{ marginBottom: 'var(--space-3)' }}>Classification</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                  <div>
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Event cause *</label>
+                    <select name="event_cause" value={form.event_cause} onChange={handleChange} required style={inputStyle}>
+                      <option value="">Select...</option>
+                      {meta?.causes.map(c => <option key={c} value={c}>{c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>)}
+                    </select>
+                  </div>
+                  <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
                     <div style={{ flex: 1 }}>
-                      <label style={{ display: 'block', fontSize: '0.75rem', marginBottom: '0.25rem' }}>End latitude</label>
-                      <input type="number" step="0.0001" name="endlatitude" value={form.endlatitude || ''} onChange={handleChange} style={inputStyle} />
+                      <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Vehicle Type</label>
+                      <select name="veh_type" value={form.veh_type} onChange={handleChange} style={inputStyle}>
+                        <option value="">Unknown</option>
+                        {meta?.veh_types.map(v => <option key={v} value={v}>{v.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>)}
+                      </select>
                     </div>
                     <div style={{ flex: 1 }}>
-                      <label style={{ display: 'block', fontSize: '0.75rem', marginBottom: '0.25rem' }}>End longitude</label>
-                      <input type="number" step="0.0001" name="endlongitude" value={form.endlongitude || ''} onChange={handleChange} style={inputStyle} />
+                      <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Corridor</label>
+                      <input type="text" name="corridor" value={form.corridor} onChange={handleChange} placeholder="e.g. Outer Ring Road" style={inputStyle} />
                     </div>
                   </div>
-                )}
+                  <div>
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Description</label>
+                    <textarea name="description" value={form.description} onChange={handleChange} rows={2} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Free text..."/>
+                  </div>
+                </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+              <hr className="divider" style={{ margin: 0 }} />
+
+              {/* ── Location ── */}
+              <div>
+                <div className="eyebrow" style={{ marginBottom: 'var(--space-3)' }}>Location</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                  <div>
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Zone *</label>
+                    <select name="zone_filled" value={form.zone_filled} onChange={handleChange} required style={inputStyle}>
+                      <option value="">Select...</option>
+                      {meta?.zones.map(z => <option key={z} value={z}>{z}</option>)}
+                    </select>
+                  </div>
+                  <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+                    <div style={{ flex: 1 }}>
+                      <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Latitude *</label>
+                      <input type="number" step="0.0001" name="latitude" value={form.latitude} onChange={handleChange} required style={inputStyle} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Longitude *</label>
+                      <input type="number" step="0.0001" name="longitude" value={form.longitude} onChange={handleChange} required style={inputStyle} />
+                    </div>
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    Auto-filled from zone centroid — edit to pin exact location
+                  </div>
+
+                  {/* Stretch event — logically attached to location */}
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: 'var(--space-3)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--glass-border)' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', fontSize: '13px', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+                      <input type="checkbox" checked={isStretch} onChange={(e) => setIsStretch(e.target.checked)} />
+                      Stretch event (construction / water-logging segment)
+                    </label>
+                    {isStretch && (
+                      <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-3)' }}>
+                        <div style={{ flex: 1 }}>
+                          <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>End latitude</label>
+                          <input type="number" step="0.0001" name="endlatitude" value={form.endlatitude || ''} onChange={handleChange} style={inputStyle} />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>End longitude</label>
+                          <input type="number" step="0.0001" name="endlongitude" value={form.endlongitude || ''} onChange={handleChange} style={inputStyle} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <hr className="divider" style={{ margin: 0 }} />
+
+              {/* ── Timing ── */}
+              <div>
+                <div className="eyebrow" style={{ marginBottom: 'var(--space-3)' }}>Timing</div>
+                <div>
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Start date & time (IST) *</label>
+                  <input type="datetime-local" name="start_datetime" value={form.start_datetime} onChange={handleChange} required style={inputStyle} />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
                 <button type="submit" disabled={advLoading || !form.event_cause || !form.zone_filled} style={btnStyle(true)}>
                   {advLoading ? 'Predicting...' : 'Run Advisory'}
                 </button>

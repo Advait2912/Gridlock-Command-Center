@@ -32,12 +32,6 @@ export const StatGrid: React.FC<StatGridProps> = ({ advisory }) => {
     return '';
   };
 
-  const getClosureColor = (prob: number) => {
-    if (prob >= 0.7) return 'red';
-    if (prob >= 0.4) return 'amber';
-    return 'green';
-  };
-
   const getRiskColor = (risk: number) => {
     if (risk >= 7) return 'red';
     if (risk >= 4) return 'amber';
@@ -46,13 +40,6 @@ export const StatGrid: React.FC<StatGridProps> = ({ advisory }) => {
 
   return (
     <div className="stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-      <StatBox 
-        label="Closure Probability" 
-        value={`${(advisory.closure_probability * 100).toFixed(1)}%`}
-        color={getClosureColor(advisory.closure_probability)}
-        subtext="calibrated, not raw model score"
-        highlight
-      />
       <StatBox 
         label="Congestion Score" 
         value={`${advisory.cascade_risk_score}/10`}

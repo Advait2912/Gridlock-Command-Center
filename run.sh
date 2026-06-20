@@ -17,7 +17,7 @@ uvicorn backend.main:app --port 8000 &
 BACKEND_PID=$!
 
 # Wait a moment for backend to initialize (models loading takes time)
-sleep 2
+sleep 5
 
 # 2. Start the React frontend
 echo "-> Starting frontend on port 5173"

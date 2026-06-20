@@ -9,37 +9,43 @@ This repository is divided into two primary standalone systems:
 
 ## Getting Started
 
-A convenience script `run.sh` is provided in the root directory to boot both the frontend and backend servers concurrently.
+Convenience scripts are provided in the root directory to easily set up and boot the frontend and backend servers concurrently for both Windows and Linux/macOS.
 
 ### Prerequisites
 
-You must have the following installed in your WSL (Ubuntu) environment:
 - Python 3.12+
 - Node.js (v18+) & NPM
 
-### Setup & Run
+### Setup (First time only)
 
-1. **Activate Environment & Install Dependencies (First time only):**
-   ```bash
-   # Backend
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r backend/requirements.txt
+**For Windows:**
+Double-click `setup.bat` or run it in your terminal:
+```cmd
+setup.bat
+```
 
-   # Frontend
-   cd frontend
-   npm install
-   cd ..
-   ```
+**For Linux / macOS:**
+```bash
+chmod +x setup.sh
+./setup.sh
+```
 
-2. **Run the Application:**
-   ```bash
-   chmod +x run.sh
-   ./run.sh
-   ```
+### Run the Application
 
-   This will start:
-   - **Backend API:** `http://localhost:8000` (Access the Swagger UI at `/docs`)
-   - **Frontend UI:** `http://localhost:5173`
+**For Windows:**
+Double-click `run.bat` or run it in your terminal:
+```cmd
+run.bat
+```
+
+**For Linux / macOS:**
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+This will automatically start both servers concurrently:
+- **Backend API:** `http://localhost:8000` (Access the Swagger UI at `/docs`)
+- **Frontend UI:** `http://localhost:5173`
 
 > **Note:** The backend loads ~18MB of ML artifacts and spatial graphs into memory on boot. It may take 10-25 seconds before the endpoints become responsive.

@@ -16,13 +16,13 @@ export const RoutingSection: React.FC<RoutingSectionProps> = ({ routing }) => {
           <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Baseline Time</div>
           <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{routing.baseline_minutes.toFixed(1)} min</div>
         </div>
-        {routing.affected_minutes !== null && (
+        {typeof routing.affected_minutes === 'number' && (
           <div>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Affected Time</div>
             <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{routing.affected_minutes.toFixed(1)} min</div>
           </div>
         )}
-        {routing.delay_minutes !== null && (
+        {typeof routing.delay_minutes === 'number' && (
           <div>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Added Delay</div>
             <div style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--status-danger)' }}>

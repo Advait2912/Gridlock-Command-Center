@@ -25,7 +25,7 @@ export const MainLayout: React.FC = () => {
             Browse Historical Events
           </NavLink>
           <NavLink 
-            to="/live" 
+            to="/new" 
             style={({ isActive }) => ({
               padding: '0.75rem 1rem',
               borderRadius: 'var(--radius-md)',
@@ -36,6 +36,19 @@ export const MainLayout: React.FC = () => {
             })}
           >
             New Event Advisory
+          </NavLink>
+          <NavLink 
+            to="/live" 
+            style={({ isActive }) => ({
+              padding: '0.75rem 1rem',
+              borderRadius: 'var(--radius-md)',
+              background: isActive ? 'var(--accent-blue-glow)' : 'transparent',
+              color: isActive ? '#fff' : 'var(--text-secondary)',
+              fontWeight: isActive ? 600 : 500,
+              transition: 'all var(--transition-fast)'
+            })}
+          >
+            Live Situation Room
           </NavLink>
           <NavLink 
             to="/outcomes" 

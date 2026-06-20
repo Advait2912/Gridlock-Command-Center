@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
 import { useMeta } from '../hooks/useMeta';
-import { usePredict } from '../hooks/usePredict';
-import { PredictRequest } from '../services/types';
-import { AdvisoryPanel } from '../features/advisory/AdvisoryPanel';
+import { PredictRequest, Advisory } from '../services/types';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorBox } from '../components/ErrorBox';
+import { LiveBoardMap } from '../features/advisory/LiveBoardMap';
+import { LiveEventCard } from '../features/advisory/LiveEventCard';
+import * as api from '../services/api';
+
+interface LiveEvent {
+  id: string;
+  advisory: Advisory;
+  addedAt: Date;
+}
+
+const haversineKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
 
 export const LivePredict: React.FC = () => {
   const { data: meta, loading: metaLoading } = useMeta();
-  const { execute, data: advData, loading: advLoading, error: advError, reset } = usePredict();
+  const [liveEvents, setLiveEvents] = useState<LiveEvent[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState<PredictRequest>({
     event_cause: '',
@@ -17,32 +35,99 @@ export const LivePredict: React.FC = () => {
     longitude: 77.5946,
     start_datetime: new Date().toISOString().slice(0, 16),
     description: '',
-    veh_type: 'car'
+    veh_type: '',
+    corridor: '',
   });
+
+  const [isStretch, setIsStretch] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({
-      ...prev,
-      [name]: name === 'latitude' || name === 'longitude' ? parseFloat(value) : value
-    }));
+    setForm(prev => {
+      const updated = { ...prev, [name]: name.includes('lat') || name.includes('lon') ? parseFloat(value) : value };
+      if (name === 'zone_filled' && meta?.zone_centroids?.[value]) {
+        updated.latitude = meta.zone_centroids[value].latitude;
+        updated.longitude = meta.zone_centroids[value].longitude;
+      }
+      return updated;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.event_cause || !form.zone_filled) return;
-    await execute(form);
+    
+    setLoading(true);
+    setError(null);
+    try {
+      const payload = { ...form };
+      if (!payload.veh_type) payload.veh_type = 'MISSING';
+      if (!payload.corridor) payload.corridor = 'MISSING';
+      if (!isStretch) {
+        delete payload.endlatitude;
+        delete payload.endlongitude;
+      }
+
+      const advisory = await api.predict(payload);
+      const newEvent: LiveEvent = {
+        id: `live-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        advisory,
+        addedAt: new Date(),
+      };
+      setLiveEvents(prev => [...prev, newEvent]);
+      setForm(prev => ({ ...prev, description: '' }));
+      setForm(prev => ({ ...prev, start_datetime: new Date().toISOString().slice(0, 16) }));
+    } catch (err: any) {
+      setError(err.message || 'Failed to predict advisory');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const removeLiveEvent = (id: string) => {
+    setLiveEvents(prev => prev.filter(ev => ev.id !== id));
+  };
+
+  const clearBoard = () => {
+    setLiveEvents([]);
+  };
+
+  const handleMapFocus = () => {
+    // Note: To really pan the map we'd need to pass this down or use a ref.
+    // For now we're just triggering a re-render. LiveBoardMap handles bounds via its BoundsUpdater.
+  };
+
+  const findNearbyLiveEvents = (ev: LiveEvent, thresholdKm = 2) => {
+    const a = ev.advisory;
+    if (a.latitude == null || a.longitude == null) return [];
+    const out = [];
+    for (const other of liveEvents) {
+      if (other.id === ev.id) continue;
+      const b = other.advisory;
+      if (b.latitude == null || b.longitude == null) continue;
+      const d = haversineKm(a.latitude, a.longitude, b.latitude, b.longitude);
+      if (d <= thresholdKm) out.push({ event: other, distanceKm: d });
+    }
+    return out.sort((x, y) => x.distanceKm - y.distanceKm);
+  };
+
+  const sortedEvents = [...liveEvents].sort((x, y) => {
+    const xHigh = x.advisory.priority && x.advisory.priority.label === 'HIGH' ? 1 : 0;
+    const yHigh = y.advisory.priority && y.advisory.priority.label === 'HIGH' ? 1 : 0;
+    if (xHigh !== yHigh) return yHigh - xHigh;
+    return y.addedAt.getTime() - x.addedAt.getTime();
+  });
+
   return (
-    <div style={{ display: 'flex', gap: '2rem', height: '100%' }}>
+    <div style={{ display: 'flex', gap: '2rem', height: '100%', overflow: 'hidden' }}>
       {/* Left Column: Form */}
-      <div style={{ flex: '1', display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <h2 style={{ marginBottom: '0.25rem', color: 'var(--text-primary)' }}>New Event Advisory</h2>
+      <div style={{ flex: '0 0 450px', display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto', paddingRight: '1rem' }}>
+        <h2 style={{ marginBottom: '0.25rem', color: 'var(--text-primary)' }}>Add event to the live board</h2>
         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-          Featurizes a hypothetical event from scratch using only cached artifacts and runs the full pipeline.
+          Add events one at a time as reports come in. Each one runs through the full advisory pipeline and stays on the shared map.
         </p>
-        <div className="glass-panel" style={{ padding: '1.5rem', overflowY: 'auto' }}>
+        
+        <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '1rem' }}>
           {metaLoading ? <LoadingSpinner message="Loading options..." /> : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
@@ -61,63 +146,106 @@ export const LivePredict: React.FC = () => {
                 </select>
               </div>
 
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Start Time (IST) *</label>
+                <input type="datetime-local" name="start_datetime" value={form.start_datetime} onChange={handleChange} required style={inputStyle} />
+              </div>
+
               <div style={{ display: 'flex', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Latitude</label>
-                  <input type="number" step="0.0001" name="latitude" value={form.latitude} onChange={handleChange} style={inputStyle} />
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Latitude *</label>
+                  <input type="number" step="0.0001" name="latitude" value={form.latitude} onChange={handleChange} required style={inputStyle} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Longitude</label>
-                  <input type="number" step="0.0001" name="longitude" value={form.longitude} onChange={handleChange} style={inputStyle} />
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Longitude *</label>
+                  <input type="number" step="0.0001" name="longitude" value={form.longitude} onChange={handleChange} required style={inputStyle} />
                 </div>
               </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Start Time</label>
-                <input type="datetime-local" name="start_datetime" value={form.start_datetime} onChange={handleChange} style={inputStyle} />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Vehicle Type</label>
-                <select name="veh_type" value={form.veh_type} onChange={handleChange} style={inputStyle}>
-                  {meta?.veh_types.map(v => <option key={v} value={v}>{v}</option>)}
-                </select>
-              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+                Auto-filled from zone centroid. Edit to pinpoint exact location.
+              </p>
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Description</label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
+                <textarea name="description" value={form.description} onChange={handleChange} rows={2} style={{ ...inputStyle, resize: 'vertical' }} />
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                <button type="submit" disabled={advLoading || !form.event_cause || !form.zone_filled} style={btnStyle(true)}>
-                  {advLoading ? 'Predicting...' : 'Generate Advisory'}
-                </button>
-                <button type="button" onClick={() => {
-                  setForm({ ...form, event_cause: '', zone_filled: '', description: '' });
-                  reset();
-                }} style={btnStyle(false)}>
-                  Clear
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Vehicle Type</label>
+                  <select name="veh_type" value={form.veh_type} onChange={handleChange} style={inputStyle}>
+                    <option value="">Unknown</option>
+                    {meta?.veh_types.map(v => <option key={v} value={v}>{v}</option>)}
+                  </select>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.25rem' }}>Corridor</label>
+                  <input type="text" name="corridor" value={form.corridor} onChange={handleChange} placeholder="e.g. ORR" style={inputStyle} />
+                </div>
+              </div>
+
+              <div style={{ background: 'rgba(0,0,0,0.1)', padding: '0.75rem', borderRadius: 'var(--radius-sm)' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={isStretch} onChange={(e) => setIsStretch(e.target.checked)} />
+                  Stretch event? (e.g. water-logging segment)
+                </label>
+                
+                {isStretch && (
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem' }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', marginBottom: '0.25rem' }}>End Lat</label>
+                      <input type="number" step="0.0001" name="endlatitude" value={form.endlatitude || ''} onChange={handleChange} style={inputStyle} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', marginBottom: '0.25rem' }}>End Lon</label>
+                      <input type="number" step="0.0001" name="endlongitude" value={form.endlongitude || ''} onChange={handleChange} style={inputStyle} />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                <button type="submit" disabled={loading || !form.event_cause || !form.zone_filled} style={btnStyle(true)}>
+                  {loading ? 'Predicting...' : '+ Add to live board'}
                 </button>
               </div>
             </form>
           )}
         </div>
+        
+        {error && <ErrorBox error={error} />}
       </div>
 
-      {/* Right Column: Advisory Result */}
-      <div style={{ flex: '1.5', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)', padding: '2rem', overflowY: 'auto' }}>
-        {!advData && !advLoading && !advError ? (
-          <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-            Fill the form and submit to see prediction
-          </div>
-        ) : advLoading ? (
-          <LoadingSpinner message="Generating ML predictions..." fullPage />
-        ) : advError ? (
-          <ErrorBox error={advError} />
-        ) : advData ? (
-          <AdvisoryPanel advisory={advData} />
-        ) : null}
+      {/* Right Column: Map and Cards */}
+      <div style={{ flex: '1', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h2 style={{ margin: 0, color: 'var(--text-primary)' }}>
+            Live situation map <span style={{ color: 'var(--text-muted)' }}>{liveEvents.length ? `(${liveEvents.length} active)` : ''}</span>
+          </h2>
+          <button className="btn-secondary" onClick={clearBoard}>Clear board</button>
+        </div>
+
+        <LiveBoardMap events={liveEvents} onMarkerClick={(id) => {
+          document.getElementById(`livecard-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }} />
+
+        <div style={{ flex: '1', overflowY: 'auto', paddingRight: '0.5rem' }}>
+          {sortedEvents.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)' }}>
+              Add an event above — advisories will appear here and stack up as more events come in.
+            </div>
+          ) : (
+            sortedEvents.map(ev => (
+              <LiveEventCard 
+                key={ev.id} 
+                event={ev} 
+                nearbyEvents={findNearbyLiveEvents(ev)} 
+                onRemove={removeLiveEvent}
+                onMapFocus={handleMapFocus}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

@@ -42,4 +42,7 @@ export const SESSION_KEYS = {
   NEW_FORM:          'gridlock:new:form',
   NEW_IS_STRETCH:    'gridlock:new:isStretch',
   NEW_ADVISORY:      'gridlock:new:advisory',
+
+  // Outcomes Log
+  OUTCOMES_LOG:      'gridlock:outcomes:log',
 } as const;

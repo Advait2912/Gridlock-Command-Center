@@ -64,7 +64,7 @@ export const NewPredict: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.event_cause || !form.zone_filled) return;
-    
+
     const payload = { ...form };
     if (!payload.veh_type) payload.veh_type = 'MISSING';
     if (!payload.corridor) payload.corridor = 'MISSING';
@@ -72,7 +72,7 @@ export const NewPredict: React.FC = () => {
       delete payload.endlatitude;
       delete payload.endlongitude;
     }
-    
+
     setAdvError2(null);
     try {
       const result = await execute(payload);
@@ -152,7 +152,7 @@ export const NewPredict: React.FC = () => {
                   </div>
                   <div>
                     <label className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Description</label>
-                    <textarea name="description" value={form.description} onChange={handleChange} rows={2} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Free text..."/>
+                    <textarea name="description" value={form.description} onChange={handleChange} rows={2} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Free text..." />
                   </div>
                 </div>
               </div>
@@ -231,7 +231,7 @@ export const NewPredict: React.FC = () => {
       </div>
 
       {/* Right Column: Advisory Result */}
-      <div style={{ flex: '1.5', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)', padding: '2rem', overflowY: 'auto' }}>
+      <div style={{ flex: '1.5', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)', padding: '1rem', overflowY: 'auto' }}>
         {!advData && !advLoading && !displayError ? (
           <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
             Submit the form to see an advisory here.
@@ -252,11 +252,11 @@ export const NewPredict: React.FC = () => {
 };
 
 const inputStyle = {
-  width: '100%', 
-  padding: '0.6rem', 
-  borderRadius: 'var(--radius-sm)', 
-  border: '1px solid var(--glass-border)', 
-  background: 'rgba(0,0,0,0.2)', 
+  width: '100%',
+  padding: '0.6rem',
+  borderRadius: 'var(--radius-sm)',
+  border: '1px solid var(--glass-border)',
+  background: 'rgba(0,0,0,0.2)',
   color: 'white',
   fontFamily: 'inherit'
 };

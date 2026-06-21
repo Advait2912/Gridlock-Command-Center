@@ -1,6 +1,6 @@
 import React from 'react';
 import { SimilarEvent, SimilarEventsSummary } from '../../services/types';
-import { SectionBlock } from '../../components/SectionBlock';
+
 
 interface SimilarEventsProps {
   events: SimilarEvent[];
@@ -11,7 +11,7 @@ export const SimilarEvents: React.FC<SimilarEventsProps> = ({ events, summary })
   if (events.length === 0) return null;
 
   return (
-    <SectionBlock title="Case-Based Reasoning" icon="🔍">
+    <div style={{ marginBottom: '8px' }}>
       {summary && (
         <div style={{ display: 'flex', gap: 'var(--space-5)', flexWrap: 'wrap', marginBottom: 'var(--space-3)', padding: 'var(--space-2) var(--space-3)', background: 'rgba(255, 255, 255, 0.03)', borderRadius: 'var(--radius-sm)' }}>
           <div>
@@ -48,7 +48,7 @@ export const SimilarEvents: React.FC<SimilarEventsProps> = ({ events, summary })
           <tbody>
             {events.map((evt, idx) => (
               <tr key={idx} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
-                <td style={{ padding: '4px 6px', color: 'var(--text-primary)' }}>{evt.event_cause}</td>
+                <td style={{ padding: '4px 6px', color: 'var(--text-primary)' }}>{evt.event_cause.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</td>
                 <td style={{ padding: '4px 6px', color: 'var(--text-secondary)' }}>{evt.zone}</td>
                 <td style={{ padding: '4px 6px', color: evt.requires_road_closure ? 'var(--status-danger)' : 'var(--text-muted)' }}>{evt.requires_road_closure ? 'Yes' : 'No'}</td>
                 <td style={{ padding: '4px 6px', color: 'var(--text-secondary)' }}>{evt.duration_hrs ? `${evt.duration_hrs.toFixed(1)}h` : '—'}</td>
@@ -59,6 +59,6 @@ export const SimilarEvents: React.FC<SimilarEventsProps> = ({ events, summary })
           </tbody>
         </table>
       </div>
-    </SectionBlock>
+    </div>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConflictsResult } from '../../services/types';
-import { SectionBlock } from '../../components/SectionBlock';
+
 import { getProbabilityBadge } from '../../components/Badge';
 
 interface ConflictsSectionProps {
@@ -11,7 +11,7 @@ export const ConflictsSection: React.FC<ConflictsSectionProps> = ({ conflicts })
   if (!conflicts || conflicts.count === 0) return null;
 
   return (
-    <SectionBlock title="Spatial Conflicts" icon="⚔️">
+    <div style={{ marginBottom: '8px' }}>
       <div style={{ marginBottom: 'var(--space-2)', fontSize: '12px', color: 'var(--status-warning)', fontWeight: 500 }}>
         {conflicts.count} concurrent event(s) in this zone.
       </div>
@@ -32,6 +32,6 @@ export const ConflictsSection: React.FC<ConflictsSectionProps> = ({ conflicts })
           </div>
         ))}
       </div>
-    </SectionBlock>
+    </div>
   );
 };

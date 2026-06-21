@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Advisory } from '../../services/types';
 import { useOutcomes } from '../../hooks/useOutcomes';
-import { SectionBlock } from '../../components/SectionBlock';
+
 
 interface OutcomeFormProps {
   advisory: Advisory;
@@ -48,7 +48,7 @@ export const OutcomeForm: React.FC<OutcomeFormProps> = ({ advisory, sourceEventI
   };
 
   return (
-    <SectionBlock title="Log Outcome" icon="📝">
+    <div>
       {success && (
         <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--status-success-bg)', color: 'var(--status-success)', borderRadius: 'var(--radius-sm)' }}>
           Outcome logged successfully.
@@ -126,6 +126,6 @@ export const OutcomeForm: React.FC<OutcomeFormProps> = ({ advisory, sourceEventI
           {isSubmitting ? 'Submitting...' : 'Submit Log'}
         </button>
       </form>
-    </SectionBlock>
+    </div>
   );
 };

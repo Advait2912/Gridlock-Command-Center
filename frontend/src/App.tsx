@@ -4,7 +4,6 @@ import { Dashboard } from './pages/Dashboard';
 import { NewPredict } from './pages/NewPredict';
 import { LivePredict } from './pages/LivePredict';
 import { Outcomes } from './pages/Outcomes';
-import { About } from './pages/About';
 import { Landing } from './pages/Landing';
 
 function App() {
@@ -17,7 +16,6 @@ function App() {
           <Route path="new" element={<NewPredict />} />
           <Route path="live" element={<LivePredict />} />
           <Route path="outcomes" element={<Outcomes />} />
-          <Route path="about" element={<About />} />
           <Route path="*" element={<Navigate to="/app" replace />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

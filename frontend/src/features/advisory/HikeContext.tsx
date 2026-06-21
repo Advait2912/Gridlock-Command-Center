@@ -1,6 +1,6 @@
 import React from 'react';
 import { HikeContext as HikeContextType, HistoricalPeakWindow } from '../../services/types';
-import { SectionBlock } from '../../components/SectionBlock';
+
 
 interface HikeContextProps {
   hike: HikeContextType | null;
@@ -11,7 +11,7 @@ export const HikeContext: React.FC<HikeContextProps> = ({ hike, historical_peak 
   if (!hike && !historical_peak) return null;
 
   return (
-    <SectionBlock title="Traffic Hike Risk" icon="📈">
+    <div style={{ marginBottom: '8px' }}>
       {hike && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-4)', padding: 'var(--space-2) var(--space-3)', background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', borderRadius: 'var(--radius-sm)', marginBottom: historical_peak ? 'var(--space-2)' : 0 }}>
           <div>
@@ -46,6 +46,6 @@ export const HikeContext: React.FC<HikeContextProps> = ({ hike, historical_peak 
           </span>
         </div>
       )}
-    </SectionBlock>
+    </div>
   );
 };

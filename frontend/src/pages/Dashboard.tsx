@@ -286,7 +286,7 @@ export const Dashboard: React.FC = () => {
           background: 'rgba(15,17,22,0.95)',
           borderRadius: 'var(--radius-lg)',
           border: '1px solid rgba(84,104,255,0.15)',
-          padding: 'var(--space-4)',
+          padding: '1rem',
           backdropFilter: 'blur(8px)',
         }}>
           {advLoading ? (

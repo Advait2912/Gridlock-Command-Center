@@ -13,9 +13,10 @@ export const Landing: React.FC = () => {
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
       card.addEventListener('mousemove', (e: any) => {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        const c = card as HTMLElement;
+        const r = c.getBoundingClientRect();
+        c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        c.style.setProperty('--my', (e.clientY - r.top) + 'px');
       });
     });
   }, []);

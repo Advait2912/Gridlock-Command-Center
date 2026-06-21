@@ -20,12 +20,12 @@
   height: 8px;
   background: linear-gradient(
     to right,
-    rgba(43, 174, 118, 0.2) 0%,
-    rgba(43, 174, 118, 0.2) 40%,
-    rgba(224, 165, 38, 0.2) 40%,
-    rgba(224, 165, 38, 0.2) 70%,
-    rgba(229, 72, 77, 0.2) 70%,
-    rgba(229, 72, 77, 0.2) 100%
+    rgba(124, 127, 133, 0.2) 0%,
+    rgba(124, 127, 133, 0.2) 40%,
+    rgba(168, 171, 176, 0.2) 40%,
+    rgba(168, 171, 176, 0.2) 70%,
+    rgba(255, 255, 255, 0.2) 70%,
+    rgba(255, 255, 255, 0.2) 100%
   );
   border-radius: var(--radius-sm);
   margin: var(--space-2) 0;
@@ -36,13 +36,12 @@
   position: absolute;
   height: 100%;
   background: linear-gradient(
-    90deg, 
-    var(--status-success) 0%, 
-    var(--status-warning) 40%, 
+    90deg,
+    var(--status-success) 0%,
+    var(--status-warning) 40%,
     var(--status-danger) 70%
   );
   border-radius: var(--radius-sm);
-  box-shadow: 0 0 8px rgba(255,255,255,0.2);
 }
 
 .risk-meter-marker {
@@ -50,8 +49,7 @@
   top: 0;
   width: 2px;
   height: 100%;
-  background: white;
-  box-shadow: 0 0 4px white;
+  background: var(--text-primary);
   transform: translateX(-50%);
   z-index: 2;
 }

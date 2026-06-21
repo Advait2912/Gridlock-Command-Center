@@ -55,7 +55,7 @@ export const OutcomeForm: React.FC<OutcomeFormProps> = ({ advisory, sourceEventI
         </div>
       )}
       {error && (
-        <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--status-danger-bg)', color: '#fca5a5', borderRadius: 'var(--radius-sm)' }}>
+        <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--status-danger-bg)', color: '#FFFFFF', borderRadius: 'var(--radius-sm)' }}>
           {error}
         </div>
       )}
@@ -111,9 +111,9 @@ export const OutcomeForm: React.FC<OutcomeFormProps> = ({ advisory, sourceEventI
           style={{
             alignSelf: 'flex-start',
             padding: '6px 18px',
-            background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-cyan))',
-            color: '#06080a',
-            border: 'none',
+            background: 'var(--accent-blue)',
+            border: '1px solid var(--border-strong)',
+            color: 'var(--bg)',
             borderRadius: '30px',
             fontWeight: 700,
             fontFamily: 'var(--font-display)',

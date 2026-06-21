@@ -109,12 +109,7 @@ export const NewPredict: React.FC = () => {
             fontWeight: 800,
             fontSize: '18px',
             letterSpacing: '-0.02em',
-            background: 'linear-gradient(120deg, #fff 20%, var(--accent-cyan) 55%, var(--accent-blue) 80%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            backgroundSize: '200% auto',
-            animation: 'shine 6s linear infinite',
+            color: 'var(--text-primary)',
             marginBottom: '4px',
           }}>
             Describe a new event
@@ -265,7 +260,7 @@ const btnStyle = (primary: boolean) => ({
   flex: 1,
   padding: '0.75rem',
   background: primary ? 'var(--accent-blue)' : 'rgba(255,255,255,0.1)',
-  color: 'white',
+  color: primary ? 'var(--bg)' : 'white',
   border: 'none',
   borderRadius: 'var(--radius-sm)',
   fontWeight: 600,

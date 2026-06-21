@@ -20,7 +20,7 @@ const Div = () => (
   <div style={{
     height: '1px',
     margin: '8px 0',
-    background: 'linear-gradient(90deg, rgba(84,104,255,0.35), rgba(52,195,214,0.2), transparent)',
+    background: 'linear-gradient(90deg, rgba(255, 255, 255,0.35), rgba(201, 204, 209,0.2), transparent)',
   }} />
 );
 
@@ -92,9 +92,9 @@ export const AdvisoryPanel: React.FC<AdvisoryPanelProps> = ({ advisory, sourceEv
         <div style={{
           flex: 1,
           padding: '6px 8px',
-          background: 'rgba(84,104,255,0.07)',
+          background: 'rgba(255, 255, 255,0.07)',
           borderRadius: 'var(--radius-md)',
-          border: '1px solid rgba(84,104,255,0.2)',
+          border: '1px solid rgba(255, 255, 255,0.2)',
           transition: 'box-shadow 0.2s ease',
           cursor: 'default',
         }}
@@ -110,9 +110,9 @@ export const AdvisoryPanel: React.FC<AdvisoryPanelProps> = ({ advisory, sourceEv
           <div style={{
             flex: 1,
             padding: '6px 8px',
-            background: 'rgba(52,195,214,0.07)',
+            background: 'rgba(201, 204, 209,0.07)',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid rgba(52,195,214,0.2)',
+            border: '1px solid rgba(201, 204, 209,0.2)',
             transition: 'box-shadow 0.2s ease',
             cursor: 'default',
           }}
@@ -130,9 +130,9 @@ export const AdvisoryPanel: React.FC<AdvisoryPanelProps> = ({ advisory, sourceEv
       {advisory.signal_timing_suggestion && (
         <div style={{
           padding: '5px 8px',
-          background: 'rgba(84,104,255,0.06)',
+          background: 'rgba(255, 255, 255,0.06)',
           borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(84,104,255,0.15)',
+          border: '1px solid rgba(255, 255, 255,0.15)',
           fontSize: '11px',
           color: 'var(--text-secondary)',
           marginBottom: '6px',

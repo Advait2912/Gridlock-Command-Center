@@ -25,7 +25,7 @@ export const RoutingSection: React.FC<RoutingSectionProps> = ({ routing }) => {
           </div>
         )}
         {typeof routing.delay_minutes === 'number' && (
-          <div style={{ background: 'rgba(229,72,77,0.1)', padding: '6px 8px', borderRadius: '4px', border: '1px solid rgba(229,72,77,0.2)' }}>
+          <div style={{ background: 'rgba(255, 255, 255,0.1)', padding: '6px 8px', borderRadius: '4px', border: '1px solid rgba(255, 255, 255,0.2)' }}>
             <div className="eyebrow" style={{ marginBottom: '2px', fontSize: '9px', color: 'var(--status-danger)' }}>Added Delay</div>
             <div className="metric metric-sm" style={{ color: 'var(--status-danger)', fontSize: '13px' }}>+{routing.delay_minutes.toFixed(1)}m</div>
           </div>

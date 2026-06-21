@@ -10,7 +10,7 @@ export const Landing: React.FC = () => {
     }, { threshold: 0.15 });
     reveals.forEach(el => io.observe(el));
 
-    const cards = document.querySelectorAll('.card');
+    const cards = document.querySelectorAll<HTMLElement>('.card');
     cards.forEach(card => {
       card.addEventListener('mousemove', (e: any) => {
         const c = card as HTMLElement;
@@ -67,9 +67,9 @@ export const Landing: React.FC = () => {
 
         <div className="problem-grid">
           <div className="photo-stack reveal">
-            <img className="p1" src="https://picsum.photos/id/1071/900/600" alt="congested city traffic" />
-            <img className="p2" src="https://picsum.photos/id/1062/900/600" alt="rainy flooded street" />
-            <img className="p3" src="https://picsum.photos/id/1015/900/600" alt="city traffic at night" />
+            <img className="p1" src="/images/_92729063_newairportroadnearhebbal.webp" alt="congested city traffic" />
+            <img className="p2" src="/images/bangalore-city-scape.webp" alt="rainy flooded street" />
+            <img className="p3" src="/images/unverified-content-long-exposure-of-traffic-at-night-in-downtown-bangalore-india.webp" alt="city traffic at night" />
           </div>
 
           <div className="problem-list reveal">
@@ -127,6 +127,7 @@ export const Landing: React.FC = () => {
             { icon: '⚠️', title: 'Network Resilience', text: 'Checks if alternate routes are already compromised by nearby events — warning that the last bypass is about to absorb the overflow, before it happens.' },
           ].map((item, i) => (
             <div key={i} className="card">
+              <div className="card-num">{String(i + 1).padStart(2, '0')}</div>
               <div className="icon">{item.icon}</div>
               <h4>{item.title}</h4>
               <p>{item.text}</p>
@@ -228,15 +229,23 @@ export const Landing: React.FC = () => {
         </div>
 
         <div className="team-grid reveal">
-          {[1, 2, 3, 4].map(i => (
+          {[
+            { name: 'Sneh Kansagara', role: 'AI/ML Engineer (Team Leader)', pos: 'center', scale: 1 },
+            { name: 'Akshat Tripathi', role: 'ML & Backend Engineer', pos: 'center', scale: 1 },
+            { name: 'Advait Mishra', role: 'Frontend & Backend Engineer', pos: 'center', scale: 1 },
+            { name: 'Priyanshu Jha', role: 'Cloud & MLOps Engineer', pos: '100% 0%', scale: 1.6 },
+          ].map((member, i) => (
             <div key={i} className="team-card">
               <div className="team-photo">
-                <img src={`https://picsum.photos/id/${1020 + i}/600/600`} alt={`team member ${i}`} />
+                <img
+                  src={`/team/${i + 1}.jpeg`}
+                  alt={member.role}
+                  style={{ objectPosition: member.pos, transform: `scale(${member.scale})` }}
+                />
               </div>
               <div className="team-info">
-                <h4>Member Name</h4>
-                <span className="role">Role / Title</span>
-                <p>Specialist in predictive modeling and traffic network resilience.</p>
+                <h4>{member.name}</h4>
+                <span className="role">{member.role}</span>
               </div>
             </div>
           ))}
@@ -251,6 +260,11 @@ export const Landing: React.FC = () => {
           <a href="#solution">Solution</a>
           <a href="#pipeline">Pipeline</a>
           <a href="#team">Team</a>
+        </div>
+        <div className="footer-contact">
+          <a href="tel:+917990409021">+91 79904 09021</a>
+          <span className="sep">·</span>
+          <a href="mailto:snehkansagara@gmail.com">snehkansagara@gmail.com</a>
         </div>
       </footer>
     </div>

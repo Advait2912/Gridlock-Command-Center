@@ -28,8 +28,8 @@ const PULSE_CSS = `
   margin: auto;
   width: 12px; height: 12px;
   border-radius: 50%;
-  background: var(--marker-color, #E5484D);
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.25), 0 0 10px var(--marker-color, #E5484D);
+  background: var(--marker-color, #FFFFFF);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.25), 0 0 10px var(--marker-color, #FFFFFF);
   z-index: 3;
 }
 .pulse-ring {
@@ -38,7 +38,7 @@ const PULSE_CSS = `
   margin: auto;
   width: 24px; height: 24px;
   border-radius: 50%;
-  border: 2px solid var(--marker-color, #E5484D);
+  border: 2px solid var(--marker-color, #FFFFFF);
   animation: pulse-expand 2.4s ease-out infinite;
   opacity: 0;
 }
@@ -47,6 +47,16 @@ const PULSE_CSS = `
   0%   { transform: scale(0.6); opacity: 0.9; }
   100% { transform: scale(2.8); opacity: 0; }
 }
+.pulse-marker:hover .pulse-core {
+  background: var(--accent-live);
+  box-shadow: 0 0 0 2px rgba(63, 214, 198, 0.3), 0 0 10px var(--accent-live);
+  transform: scale(1.2);
+}
+.pulse-marker:active .pulse-core {
+  background: var(--accent-live);
+  transform: scale(0.9);
+}
+.pulse-core { transition: transform .15s ease, background .15s ease, box-shadow .15s ease; }
 `;
 
 let pulseCSSInjected = false;
@@ -98,9 +108,9 @@ export const EventMap: React.FC<EventMapProps> = ({ advisory }) => {
     : 350;
 
   const riskColorRaw =
-    advisory.closure_probability >= 0.7 ? '#E5484D' :
-    advisory.closure_probability >= 0.4 ? '#E0A526' :
-    '#2BAE76';
+    advisory.closure_probability >= 0.7 ? '#FFFFFF' :
+    advisory.closure_probability >= 0.4 ? '#A8ABB0' :
+    '#7C7F85';
 
   const riskColorVar =
     advisory.closure_probability >= 0.7 ? 'var(--status-danger)' :
@@ -119,7 +129,7 @@ export const EventMap: React.FC<EventMapProps> = ({ advisory }) => {
 
   return (
     <div
-      className="glass-panel"
+      className="glass-panel map-card"
       style={{
         height: '240px',
         width: '100%',

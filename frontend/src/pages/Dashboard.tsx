@@ -29,14 +29,14 @@ const PULSE_CSS = `
 .db-pulse-core {
   position: absolute; inset: 0; margin: auto;
   width: 12px; height: 12px; border-radius: 50%;
-  background: var(--db-color, #E5484D);
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.2), 0 0 12px var(--db-color, #E5484D);
+  background: var(--db-color, #FFFFFF);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.2), 0 0 12px var(--db-color, #FFFFFF);
   z-index: 3;
 }
 .db-pulse-ring {
   position: absolute; inset: 0; margin: auto;
   width: 24px; height: 24px; border-radius: 50%;
-  border: 2px solid var(--db-color, #E5484D);
+  border: 2px solid var(--db-color, #FFFFFF);
   animation: db-pulse-anim 2.4s ease-out infinite; opacity: 0;
 }
 .db-pulse-ring.d2 { animation-delay: 1.2s; }
@@ -106,10 +106,10 @@ export const Dashboard: React.FC = () => {
   };
 
   const riskColorRaw = advisoryData
-    ? (advisoryData.closure_probability >= 0.7 ? '#E5484D'
-      : advisoryData.closure_probability >= 0.4 ? '#E0A526'
-      : '#2BAE76')
-    : '#5468FF';
+    ? (advisoryData.closure_probability >= 0.7 ? '#FFFFFF'
+      : advisoryData.closure_probability >= 0.4 ? '#A8ABB0'
+      : '#7C7F85')
+    : '#FFFFFF';
 
   const riskColorVar = advisoryData
     ? (advisoryData.closure_probability >= 0.7 ? 'var(--status-danger)'
@@ -143,12 +143,7 @@ export const Dashboard: React.FC = () => {
             fontWeight: 800,
             fontSize: '16px',
             letterSpacing: '-0.02em',
-            background: 'linear-gradient(120deg, #fff 20%, var(--accent-cyan) 55%, var(--accent-blue) 80%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            backgroundSize: '200% auto',
-            animation: 'shine 6s linear infinite',
+            color: 'var(--text-primary)',
             marginBottom: '2px',
           }}>
             Historical Events
@@ -193,7 +188,7 @@ export const Dashboard: React.FC = () => {
           flex: 1,
           borderRadius: 'var(--radius-lg)',
           overflow: 'hidden',
-          border: '1px solid rgba(84,104,255,0.2)',
+          border: '1px solid rgba(255, 255, 255,0.2)',
           position: 'relative',
           boxShadow: advisoryData ? `0 0 20px ${riskColorRaw}22` : 'none',
           transition: 'box-shadow 0.4s ease',
@@ -285,7 +280,7 @@ export const Dashboard: React.FC = () => {
           overflowY: 'auto',
           background: 'rgba(15,17,22,0.95)',
           borderRadius: 'var(--radius-lg)',
-          border: '1px solid rgba(84,104,255,0.15)',
+          border: '1px solid rgba(255, 255, 255,0.15)',
           padding: '1rem',
           backdropFilter: 'blur(8px)',
         }}>

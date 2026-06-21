@@ -49,8 +49,8 @@ const TH: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     padding: '6px 10px',
     textAlign: 'left',
     whiteSpace: 'nowrap',
-    background: 'rgba(84,104,255,0.06)',
-    borderBottom: '1px solid rgba(84,104,255,0.2)',
+    background: 'rgba(255, 255, 255,0.06)',
+    borderBottom: '1px solid rgba(255, 255, 255,0.2)',
     color: 'var(--accent-cyan)',
     fontWeight: 700,
   }}>
@@ -77,12 +77,7 @@ export const Outcomes: React.FC = () => {
             fontWeight: 800,
             fontSize: '18px',
             letterSpacing: '-0.02em',
-            background: 'linear-gradient(120deg, #fff 20%, var(--accent-cyan) 55%, var(--accent-blue) 80%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            backgroundSize: '200% auto',
-            animation: 'shine 6s linear infinite',
+            color: 'var(--text-primary)',
           }}>
             Outcomes Log
           </div>
@@ -94,10 +89,10 @@ export const Outcomes: React.FC = () => {
           onClick={refresh}
           style={{
             padding: '6px 14px',
-            background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-cyan))',
-            border: 'none',
+            background: 'var(--accent-blue)',
+            border: '1px solid var(--border-strong)',
             borderRadius: '30px',
-            color: '#06080a',
+            color: 'var(--bg)',
             cursor: 'pointer',
             fontFamily: 'var(--font-display)',
             fontSize: '12px',
@@ -141,7 +136,7 @@ export const Outcomes: React.FC = () => {
                       borderBottom: '1px solid rgba(255,255,255,0.04)',
                       transition: 'background 0.15s ease',
                     }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(84,104,255,0.05)')}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255, 255, 255,0.05)')}
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                   >
                     <TD>

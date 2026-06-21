@@ -28,10 +28,10 @@ const IconClipboard = () => (
 );
 
 const navItems = [
-  { to: '/app', label: 'Historical Events', icon: <IconHistory />, end: true },
-  { to: '/app/new', label: 'New Advisory', icon: <IconPlus />, end: false },
   { to: '/app/live', label: 'Live Situation Room', icon: <IconRadio />, end: false },
+  { to: '/app/new', label: 'New Advisory', icon: <IconPlus />, end: false },
   { to: '/app/outcomes', label: 'Outcomes Log', icon: <IconClipboard />, end: false },
+  { to: '/app', label: 'Historical Events', icon: <IconHistory />, end: true },
 ];
 
 export const MainLayout: React.FC = () => {
@@ -48,42 +48,36 @@ export const MainLayout: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
-      {/* Ambient glow blobs */}
-      <div className="ambient-glow ambient-glow-1" />
-      <div className="ambient-glow ambient-glow-2" />
-
       {/* Sidebar */}
       <aside style={{
         width: '210px',
         flexShrink: 0,
-        background: 'rgba(15, 17, 22, 0.92)',
-        borderRight: '1px solid rgba(84,104,255,0.15)',
+        background: 'var(--bg-panel)',
+        borderRight: '1px solid var(--border)',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
         zIndex: 10,
-        backdropFilter: 'blur(12px)',
       }}>
         {/* Logo → links to landing page */}
         <Link to="/" style={{ textDecoration: 'none' }}>
           <div style={{
             padding: 'var(--space-4)',
-            borderBottom: '1px solid rgba(84,104,255,0.12)',
+            borderBottom: '1px solid var(--border)',
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
             transition: 'background var(--transition-fast)',
           }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(84,104,255,0.06)')}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255, 255, 255,0.04)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
-            {/* Pulsing cyan dot — landing-page style */}
+            {/* Pulsing status dot */}
             <span style={{
-              width: '9px',
-              height: '9px',
+              width: '7px',
+              height: '7px',
               borderRadius: '50%',
-              background: 'var(--accent-cyan)',
-              boxShadow: '0 0 8px var(--accent-cyan), 0 0 18px var(--accent-cyan-glow)',
+              background: 'var(--text-primary)',
               flexShrink: 0,
               animation: 'dotPulse 2s ease-in-out infinite',
             }} />
@@ -93,10 +87,7 @@ export const MainLayout: React.FC = () => {
                 fontSize: '15px',
                 fontWeight: 800,
                 letterSpacing: '-0.01em',
-                background: 'linear-gradient(90deg, #fff 20%, var(--accent-cyan) 80%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                color: 'var(--text-primary)',
               }}>GridLock</div>
               <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', marginTop: '1px' }}>Command Center</div>
             </div>
@@ -116,16 +107,13 @@ export const MainLayout: React.FC = () => {
                 gap: 'var(--space-3)',
                 padding: '7px 10px',
                 borderRadius: 'var(--radius-md)',
-                borderLeft: isActive ? '2px solid var(--accent-cyan)' : '2px solid transparent',
-                background: isActive
-                  ? 'linear-gradient(90deg, rgba(52,195,214,0.1), rgba(84,104,255,0.06))'
-                  : 'transparent',
+                borderLeft: isActive ? '2px solid var(--text-primary)' : '2px solid transparent',
+                background: isActive ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
                 color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
                 fontWeight: isActive ? 600 : 400,
                 fontSize: '12.5px',
                 textDecoration: 'none',
                 transition: 'all var(--transition-fast)',
-                boxShadow: isActive ? '0 0 10px rgba(52,195,214,0.12)' : 'none',
               })}
             >
               {icon}
@@ -137,21 +125,20 @@ export const MainLayout: React.FC = () => {
         {/* Footer: live clock */}
         <div style={{
           padding: 'var(--space-3) var(--space-4)',
-          borderTop: '1px solid rgba(84,104,255,0.12)',
+          borderTop: '1px solid var(--border)',
         }}>
           <div className="metric metric-sm panel-live" style={{
-            color: 'var(--accent-cyan)',
+            color: 'var(--text-secondary)',
             marginBottom: 'var(--space-1)',
             padding: '2px 6px',
             borderRadius: 'var(--radius-sm)',
             display: 'inline-block',
-            background: 'rgba(52,195,214,0.06)',
-            border: '1px solid rgba(52,195,214,0.15)',
+            border: '1px solid var(--border)',
           }}>
             {clock} IST
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', fontSize: '10px', color: 'var(--status-success)', marginTop: '4px' }}>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--status-success)', boxShadow: '0 0 6px var(--status-success)', display: 'inline-block' }} />
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--status-success)', display: 'inline-block' }} />
             System Operational
           </div>
         </div>
@@ -164,8 +151,8 @@ export const MainLayout: React.FC = () => {
       {/* Inline keyframe for dot pulse */}
       <style>{`
         @keyframes dotPulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent-cyan), 0 0 18px rgba(52,195,214,0.4); }
-          50% { opacity: 0.4; box-shadow: 0 0 4px var(--accent-cyan); }
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.35; }
         }
       `}</style>
     </div>

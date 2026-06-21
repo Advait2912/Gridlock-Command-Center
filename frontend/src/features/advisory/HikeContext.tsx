@@ -13,10 +13,10 @@ export const HikeContext: React.FC<HikeContextProps> = ({ hike, historical_peak 
   return (
     <div style={{ marginBottom: '8px' }}>
       {hike && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-4)', padding: 'var(--space-2) var(--space-3)', background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', borderRadius: 'var(--radius-sm)', marginBottom: historical_peak ? 'var(--space-2)' : 0 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-4)', padding: 'var(--space-2) var(--space-3)', background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.25)', borderRadius: 'var(--radius-sm)', marginBottom: historical_peak ? 'var(--space-2)' : 0 }}>
           <div>
             <div className="eyebrow" style={{ marginBottom: '2px' }}>Trigger</div>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: '#60a5fa' }}>{hike.trigger_reason}</div>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{hike.trigger_reason}</div>
           </div>
           <div>
             <div className="eyebrow" style={{ marginBottom: '2px' }}>Window</div>

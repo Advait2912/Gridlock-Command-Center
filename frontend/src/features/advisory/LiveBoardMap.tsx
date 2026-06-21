@@ -11,20 +11,32 @@ const PULSE_CSS = `
 .lbm-core {
   position: absolute; inset: 0; margin: auto;
   width: 10px; height: 10px; border-radius: 50%;
-  background: var(--lbm-color, #5468FF);
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.15), 0 0 10px var(--lbm-color, #5468FF);
+  background: var(--lbm-color, #FFFFFF);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.15), 0 0 10px var(--lbm-color, #FFFFFF);
   z-index: 3;
 }
 .lbm-ring {
   position: absolute; inset: 0; margin: auto;
   width: 20px; height: 20px; border-radius: 50%;
-  border: 2px solid var(--lbm-color, #5468FF);
+  border: 2px solid var(--lbm-color, #FFFFFF);
   animation: lbm-anim 2.4s ease-out infinite; opacity: 0;
 }
 .lbm-ring.d2 { animation-delay: 1.2s; }
 @keyframes lbm-anim {
   0%   { transform: scale(0.5); opacity: 0.85; }
   100% { transform: scale(2.5); opacity: 0; }
+}
+.lbm-core {
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.lbm-pulse:hover .lbm-core {
+  background: var(--accent-live);
+  box-shadow: 0 0 0 2px rgba(63, 214, 198, 0.3), 0 0 10px var(--accent-live);
+  transform: scale(1.25);
+}
+.lbm-pulse:active .lbm-core {
+  background: var(--accent-live);
+  transform: scale(0.9);
 }
 `;
 let lbmCSS = false;
@@ -78,7 +90,7 @@ const BoundsUpdater: React.FC<{ events: LiveEvent[] }> = ({ events }) => {
 };
 
 const riskColor = (prob: number) =>
-  prob >= 0.7 ? '#E5484D' : prob >= 0.4 ? '#E0A526' : '#2BAE76';
+  prob >= 0.7 ? '#FFFFFF' : prob >= 0.4 ? '#A8ABB0' : '#7C7F85';
 
 const riskTagClass = (prob: number) =>
   prob >= 0.7 ? 'status-tag-high' : prob >= 0.4 ? 'status-tag-medium' : 'status-tag-low';
@@ -96,16 +108,15 @@ export const LiveBoardMap: React.FC<LiveBoardMapProps> = ({ events, onMarkerClic
 
   return (
     <div
-      className="panel-live"
+      className="map-card"
       style={{
         height: '340px',
         width: '100%',
         borderRadius: 'var(--radius-lg)',
         overflow: 'hidden',
         marginBottom: '0.75rem',
-        border: '1px solid rgba(84,104,255,0.2)',
+        border: criticalCount > 0 ? '1px solid var(--accent-live)' : '1px solid var(--border)',
         position: 'relative',
-        boxShadow: criticalCount > 0 ? '0 0 20px rgba(229,72,77,0.15)' : '0 0 12px rgba(84,104,255,0.1)',
       }}
     >
       <MapContainer

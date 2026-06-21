@@ -35,8 +35,14 @@
 .risk-meter-fill {
   position: absolute;
   height: 100%;
-  background: var(--text-primary);
+  background: linear-gradient(
+    90deg, 
+    var(--status-success) 0%, 
+    var(--status-warning) 40%, 
+    var(--status-danger) 70%
+  );
   border-radius: var(--radius-sm);
+  box-shadow: 0 0 8px rgba(255,255,255,0.2);
 }
 
 .risk-meter-marker {
@@ -44,8 +50,10 @@
   top: 0;
   width: 2px;
   height: 100%;
-  background: var(--text-primary);
+  background: white;
+  box-shadow: 0 0 4px white;
   transform: translateX(-50%);
+  z-index: 2;
 }
 
 .risk-meter-scale {

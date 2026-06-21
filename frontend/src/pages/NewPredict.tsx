@@ -3,6 +3,7 @@ import { useMeta } from '../hooks/useMeta';
 import { usePredict } from '../hooks/usePredict';
 import { PredictRequest } from '../services/types';
 import { AdvisoryPanel } from '../features/advisory/AdvisoryPanel';
+import { EventMap } from '../features/advisory/EventMap';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorBox } from '../components/ErrorBox';
 
@@ -179,7 +180,10 @@ export const NewPredict: React.FC = () => {
         ) : advError ? (
           <ErrorBox error={advError} />
         ) : advData ? (
-          <AdvisoryPanel advisory={advData} />
+          <>
+            <EventMap advisory={advData} />
+            <AdvisoryPanel advisory={advData} />
+          </>
         ) : null}
       </div>
     </div>

@@ -61,11 +61,12 @@ export const EventList: React.FC<EventListProps> = ({ events, selectedId, onSele
       {events.map((evt) => {
         const isSelected = evt.id === selectedId;
         return (
-          <div
-            key={evt.id}
-            className={`feed-row${isSelected ? ' selected' : ''}`}
-            onClick={() => onSelect(evt.id)}
-          >
+            <div
+              key={evt.id}
+              className={`feed-row${isSelected ? ' selected panel-live' : ''}`}
+              onClick={() => onSelect(evt.id)}
+            >
+
             {/* Left risk color rail */}
             <div
               className="feed-row-rail"

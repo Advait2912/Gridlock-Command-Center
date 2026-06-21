@@ -90,7 +90,7 @@ export const MainLayout: React.FC = () => {
 
         {/* Footer: live clock + system status */}
         <div style={{ padding: 'var(--space-4)', borderTop: '1px solid var(--glass-border)' }}>
-          <div className="metric metric-sm" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
+          <div className="metric metric-sm panel-live" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-1)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', display: 'inline-block' }}>
             {clock} IST
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', fontSize: '11px', color: 'var(--status-success)' }}>

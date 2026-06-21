@@ -31,7 +31,7 @@ const BoundsUpdater: React.FC<{ events: LiveEvent[] }> = ({ events }) => {
 
 export const LiveBoardMap: React.FC<LiveBoardMapProps> = ({ events, onMarkerClick }) => {
   return (
-    <div style={{ height: '400px', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: '1rem', border: '1px solid var(--glass-border)' }}>
+    <div className="panel-live" style={{ height: '400px', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: '1rem', border: '1px solid var(--glass-border)' }}>
       <MapContainer center={[12.9716, 77.5946]} zoom={12} style={{ height: '100%', width: '100%', zIndex: 1 }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

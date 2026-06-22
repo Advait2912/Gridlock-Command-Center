@@ -186,7 +186,7 @@ export const Outcomes: React.FC = () => {
                       </span>
                     </TD>
                     <TD>
-                      <TrainingStatus used={row.used_for_training} />
+                      <TrainingStatus used={row.used_for_training ?? false} />
                     </TD>
                     <TD style={{ color: 'var(--text-muted)', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={row.notes || ''}>
                       {row.notes || '—'}

@@ -183,6 +183,7 @@ export interface OutcomeRecord {
   actual_duration_hrs?: number | null;
   actual_required_closure?: "true" | "false" | null;
   notes?: string | null;
+  used_for_training?: boolean | null;
 }
 
 export interface OutcomeListResponse {

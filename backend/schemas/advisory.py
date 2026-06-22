@@ -45,6 +45,9 @@ class RoutingResult(BaseModel):
     alt_route_exists: bool
     blocked_node_count: int
     blocked_nodes: List[int]
+    # [[lat, lng], ...], same order as blocked_nodes -- added for map
+    # rendering. blocked_nodes (raw OSM IDs) is unchanged.
+    blocked_nodes_coordinates: List[List[float]] = []
 
 
 class DiversionRoute(BaseModel):
@@ -54,6 +57,9 @@ class DiversionRoute(BaseModel):
     travel_minutes: float
     via: str
     path_nodes: List[int]
+    # [[lat, lng], ...] tracing path_nodes in order -- added for map
+    # rendering. path_nodes (raw OSM IDs) is unchanged.
+    coordinates: List[List[float]] = []
 
 
 class SimilarEvent(BaseModel):
@@ -133,6 +139,10 @@ class Advisory(BaseModel):
     footprint_radius_km: float
     routing: Optional[RoutingResult] = None
     recommended_barricade_node: Optional[int] = None
+    # [lat, lng] for recommended_barricade_node, or null if no barricade is
+    # recommended -- added for map rendering. recommended_barricade_node
+    # (raw OSM ID) is unchanged.
+    recommended_barricade_coordinates: Optional[List[float]] = None
     barricade_candidates_considered: List[int] = []
     diversion_routes: List[DiversionRoute] = []
     network_resilience: Optional[NetworkResilienceResult] = None

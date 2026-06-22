@@ -56,3 +56,4 @@ Thumbs.db
 # remove documentation and migration documents
 docs/
 migration/
+catboost_info

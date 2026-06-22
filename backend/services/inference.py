@@ -562,6 +562,9 @@ def _build_advisory_new(event_row, df, G_main, centrality, cbr_artifacts,
             node, event_row["event_cause"], G_main, centrality
         )
         advisory["recommended_barricade_node"] = best_barricade
+        advisory["recommended_barricade_coordinates"] = (
+            np_pipe.node_to_latlng(best_barricade, G_main) if best_barricade is not None else None
+        )
         advisory["barricade_candidates_considered"] = candidates
 
         if routing and routing.get("alt_route_exists"):
@@ -576,6 +579,7 @@ def _build_advisory_new(event_row, df, G_main, centrality, cbr_artifacts,
     else:
         advisory["routing"] = None
         advisory["recommended_barricade_node"] = None
+        advisory["recommended_barricade_coordinates"] = None
         advisory["diversion_routes"] = []
         advisory["network_resilience"] = None
 

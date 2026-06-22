@@ -220,6 +220,25 @@ BPR_CAPACITY_MAP = {
 }
 
 
+def node_to_latlng(node, graph):
+    """OSM node ID -> [lat, lng], or None if the node has no coordinate
+    data. osmnx stores latitude as the 'y' attribute and longitude as 'x'
+    -- this is purely a lookup, no new computation. Used to give the
+    frontend map-renderable coordinates alongside the existing raw node
+    IDs (which are only meaningful for backend routing math)."""
+    data = graph.nodes.get(node)
+    if not data or "y" not in data or "x" not in data:
+        return None
+    return [round(float(data["y"]), 6), round(float(data["x"]), 6)]
+
+
+def nodes_to_latlng(nodes, graph):
+    """List of OSM node IDs -> list of [lat, lng] pairs, same order,
+    skipping any node missing coordinate data."""
+    coords = [node_to_latlng(n, graph) for n in nodes]
+    return [c for c in coords if c is not None]
+
+
 def haversine_km(lat1, lon1, lat2, lon2):
     R = 6371.0
     lat1, lon1, lat2, lon2 = map(np.radians, [lat1, lon1, lat2, lon2])
@@ -1239,15 +1258,21 @@ def compute_routing_delay(source_node, event_cause, graph):
                       if score >= HARD_CLOSURE_THRESHOLD and n not in (upstream, downstream)]
     G_blocked = graph.copy()
     G_blocked.remove_nodes_from(blocked_nodes)
+    # Lat/lng alongside the raw node IDs -- node IDs alone aren't renderable
+    # on a map (they're internal graph identifiers, not coordinates). Added
+    # as an extra field; blocked_nodes itself is untouched.
+    blocked_nodes_coordinates = nodes_to_latlng(blocked_nodes, graph)
     try:
         affected_time_s = nx.shortest_path_length(G_blocked, upstream, downstream, weight="travel_time")
     except (nx.NetworkXNoPath, nx.NodeNotFound):
         return {"footprint_size": len(footprint), "baseline_minutes": baseline_time_s / 60,
                 "affected_minutes": None, "delay_minutes": None, "alt_route_exists": False,
-                "blocked_node_count": len(blocked_nodes), "blocked_nodes": blocked_nodes}
+                "blocked_node_count": len(blocked_nodes), "blocked_nodes": blocked_nodes,
+                "blocked_nodes_coordinates": blocked_nodes_coordinates}
     return {"footprint_size": len(footprint), "baseline_minutes": baseline_time_s / 60,
             "affected_minutes": affected_time_s / 60, "delay_minutes": (affected_time_s - baseline_time_s) / 60,
-            "alt_route_exists": True, "blocked_node_count": len(blocked_nodes), "blocked_nodes": blocked_nodes}
+            "alt_route_exists": True, "blocked_node_count": len(blocked_nodes), "blocked_nodes": blocked_nodes,
+            "blocked_nodes_coordinates": blocked_nodes_coordinates}
 
 
 def stage7_spread(df: pd.DataFrame, G) -> pd.DataFrame:
@@ -1418,9 +1443,12 @@ def recommend_diversion(graph, upstream, downstream, blocked_nodes, k=3,
             travel_minutes = sum(G_simple[u][v]["travel_time"] for u, v in edges) / 60
             names = [G_simple[u][v]["name"] for u, v in edges if G_simple[u][v]["name"]]
             primary_name = max(set(names), key=names.count) if names else "unnamed road"
+            # coordinates: same path, looked up against the original graph
+            # (not G_simple, which only carries edge data) -- path_nodes
+            # stays as-is for any caller still doing graph math on it.
             routes.append({"rank": len(routes) + 1, "path_length": len(path), "distance_km": round(distance_km, 2),
                            "travel_minutes": round(travel_minutes, 1), "via": primary_name,
-                           "path_nodes": path})
+                           "path_nodes": path, "coordinates": nodes_to_latlng(path, graph)})
             accepted_node_sets.append(path_set)
             if len(routes) >= k:
                 break
@@ -1840,6 +1868,9 @@ def build_advisory(event_row, df, G_main, centrality, cbr_artifacts,
             node, event_row["event_cause"], G_main, centrality
         )
         advisory["recommended_barricade_node"] = best_barricade
+        advisory["recommended_barricade_coordinates"] = (
+            node_to_latlng(best_barricade, G_main) if best_barricade is not None else None
+        )
         advisory["barricade_candidates_considered"] = candidates
 
         if routing and routing.get("alt_route_exists"):
@@ -1854,6 +1885,7 @@ def build_advisory(event_row, df, G_main, centrality, cbr_artifacts,
     else:
         advisory["routing"] = None
         advisory["recommended_barricade_node"] = None
+        advisory["recommended_barricade_coordinates"] = None
         advisory["diversion_routes"] = []
         advisory["network_resilience"] = None
 

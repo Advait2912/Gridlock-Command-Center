@@ -31,7 +31,7 @@ from backend.services.db.retraining_repo import (
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("gridlock")
+logger = logging.getLogger("project_mayhem")
 
 from backend.services.model_manager import download_version
 
@@ -54,7 +54,7 @@ def startup_sync(client) -> str:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """FastAPI lifespan: load all artifacts once at startup."""
-    print("[GridLock] Loading artifacts — this takes ~10-25 seconds on first start...")
+    print("[Project Mayhem] Loading artifacts — this takes ~10-25 seconds on first start...")
     
     model_version = "v1"
     
@@ -95,15 +95,15 @@ async def lifespan(app: FastAPI):
     logger.info(f"[MODEL] Loaded {model_version} successfully. Ready to serve.")
 
     set_context(ctx)
-    print(f"[GridLock] Ready. {len(ctx.df_hist)} events loaded, "
+    print(f"[Project Mayhem] Ready. {len(ctx.df_hist)} events loaded, "
           f"{len(ctx.G_main.nodes)} road nodes available.")
     yield
     # Shutdown: nothing to clean up (all state is in-memory)
-    print("[GridLock] Shutting down.")
+    print("[Project Mayhem] Shutting down.")
 
 
 app = FastAPI(
-    title="GridLock Command Center",
+    title="Project Mayhem Command Center",
     description="Event-driven traffic advisory system for Bengaluru — FastAPI backend.",
     version="2.0.0",
     lifespan=lifespan,
@@ -125,4 +125,4 @@ app.include_router(outcomes.router, prefix="/api", tags=["Outcomes"])
 
 @app.get("/", tags=["Health"])
 def root():
-    return {"status": "ok", "service": "GridLock Command Center API"}
+    return {"status": "ok", "service": "Project Mayhem Command Center API"}

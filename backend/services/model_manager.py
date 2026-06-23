@@ -3,7 +3,7 @@ from pathlib import Path
 
 from backend.core.config import VERSIONED_MODELS_DIR
 
-logger = logging.getLogger("gridlock")
+logger = logging.getLogger("project_mayhem")
 
 STORAGE_BUCKET = "models"
 

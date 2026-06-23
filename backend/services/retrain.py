@@ -26,7 +26,7 @@ from backend.services.pipeline import (
 )
 from backend.services.model_manager import upload_model_files, promote_version_in_db
 
-logger = logging.getLogger("gridlock")
+logger = logging.getLogger("project_mayhem")
 
 ALL_FEATURES = TRIAGE_CAT_FEATURES + TRIAGE_NUM_FEATURES
 AFT_CAT_FEATURES = ["event_cause", "holiday_type"]

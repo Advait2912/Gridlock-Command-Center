@@ -1,6 +1,6 @@
-# GridLock Command Center
+# Project Mayhem Command Center
 
-GridLock is an event‑driven congestion pipeline for the Bengaluru Traffic Police. It ingests historical and hypothetical traffic events, processes them through a multi‑stage machine‑learning pipeline (closure triage, duration prediction, spatial conflict detection, and network routing), and surfaces actionable advisories via a React/Vite dashboard.
+Project Mayhem is an event‑driven congestion pipeline for the Bengaluru Traffic Police. It ingests historical and hypothetical traffic events, processes them through a multi‑stage machine‑learning pipeline (closure triage, duration prediction, spatial conflict detection, and network routing), and surfaces actionable advisories via a React/Vite dashboard.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -25,16 +25,16 @@ The repository is split into two independent parts:
 ```mermaid
 graph LR
     UI[React Frontend] -->|REST| API[FastAPI Backend]
-    API -->|load_artifacts| Ctxt[InferenceContext (singleton)]
-    Ctxt -->|graph & models| Pipeline[Inference / Pipeline]
+    API -->|load_artifacts| Ctxt["InferenceContext (singleton)"]
+    Ctxt -->|graph & models| Pipeline["Inference / Pipeline"]
     API -->|POST /predict| Feat[Featurisation]
-    Feat --> Score[Scoring (CatBoost, XGBoost, Weibull)]
+    Feat --> Score["Scoring (CatBoost, XGBoost, Weibull)"]
     Score --> AdvBuilder[Advisory Assembly]
     AdvBuilder -->|JSON| UI
-    API -->|GET /events| DB[Historical Events (Parquet)]
-    API -->|GET/POST /outcomes| OutcomesRepo[(CSV / Supabase)]
-    OutcomesRepo --> Retrain[Self‑retraining (BackgroundTasks)]
-    Retrain --> ModelMgr[Model Manager (Upload / Promote)]
+    API -->|GET /events| DB["Historical Events (Parquet)"]
+    API -->|GET/POST /outcomes| OutcomesRepo[("CSV / Supabase")]
+    OutcomesRepo --> Retrain["Self‑retraining (BackgroundTasks)"]
+    Retrain --> ModelMgr["Model Manager (Upload / Promote)"]
 ```
 
 ## Quick start (local development)
@@ -143,7 +143,7 @@ All prediction requests (`POST /api/predict`) use this in‑memory context, so t
 This project is licensed under the **MIT License** – see the `LICENSE` file for details.
 
 
-GridLock is an event-driven congestion pipeline for the Bengaluru Traffic Police. It ingests historical and hypothetical traffic events, processes them through a multi-stage machine learning pipeline (closure triage, duration prediction, spatial conflict detection, and network routing), and surfaces actionable advisories via a React/Vite dashboard.
+Project Mayhem is an event-driven congestion pipeline for the Bengaluru Traffic Police. It ingests historical and hypothetical traffic events, processes them through a multi-stage machine learning pipeline (closure triage, duration prediction, spatial conflict detection, and network routing), and surfaces actionable advisories via a React/Vite dashboard.
 
 This repository is divided into two primary standalone systems:
 

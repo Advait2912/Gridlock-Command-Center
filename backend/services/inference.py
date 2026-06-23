@@ -1,7 +1,7 @@
 """
-inference.py — Inference layer for the GridLock FastAPI backend.
+inference.py — Inference layer for the Project Mayhem FastAPI backend.
 
-Adapted from docs/Flipkart-GridLock/inference.py.
+Adapted from docs/Flipkart-Project-Mayhem/inference.py.
 Key changes vs. original:
   1. All file paths sourced from backend.core.config (absolute pathlib.Path).
   2. `import new_pipeline as np_pipe` → `from backend.services import pipeline as np_pipe`
@@ -51,7 +51,7 @@ from backend.core.config import (
 )
 
 import logging
-logger = logging.getLogger("gridlock")
+logger = logging.getLogger("project_mayhem")
 
 
 # Exact same num-feature list as in new_pipeline.stage6_duration -- copied

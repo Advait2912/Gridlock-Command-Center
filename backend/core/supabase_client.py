@@ -2,7 +2,7 @@ from supabase import create_client
 from backend.core.config import SUPABASE_URL, SUPABASE_SERVICE_KEY
 import logging
 
-logger = logging.getLogger("gridlock")
+logger = logging.getLogger("project_mayhem")
 
 _client = None
 

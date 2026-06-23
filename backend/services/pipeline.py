@@ -1,6 +1,6 @@
 """
 Event-Driven Congestion — Full Pipeline (Final)
-Flipkart GridLock Round 2
+Flipkart Project Mayhem
 
 Supersedes pipeline.py. Adds the Resource Recommender and Case-Based
 Retrieval stages that were previously listed as "What's Left", plus the two
@@ -1964,7 +1964,7 @@ def stage10_demo(df: pd.DataFrame, G_main, centrality, cbr_artifacts, n=5,
 def main():
     print("=" * 70)
     print("EVENT-DRIVEN CONGESTION -- FULL PIPELINE (FINAL)")
-    print("Flipkart GridLock Round 2")
+    print("Flipkart Project Mayhem")
     print("=" * 70)
 
     df = pd.read_csv(DATA_PATH, low_memory=False)

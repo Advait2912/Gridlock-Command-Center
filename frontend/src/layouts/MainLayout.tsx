@@ -118,7 +118,7 @@ export const MainLayout: React.FC = () => {
                 fontWeight: 800,
                 letterSpacing: '-0.01em',
                 color: 'var(--text-primary)',
-              }}>GridLock</div>
+              }}>Project Mayhem</div>
               <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', marginTop: '1px' }}>Command Center</div>
             </div>
           </div>

@@ -30,7 +30,7 @@ export const Landing: React.FC = () => {
 
       <nav className="landing-nav">
         <Link to="/" className="brand">
-          <span className="dot"></span> GRIDLOCK
+          <span className="dot"></span> PROJECT MAYHEM
         </Link>
         <div className="nav-links">
           <a href="#problem">Problem</a>
@@ -42,12 +42,12 @@ export const Landing: React.FC = () => {
       </nav>
 
       <section className="hero">
-        <div className="hero-tag">Flipkart GridLock · Round 2 Submission</div>
-        <h1>GRIDLOCK</h1>
+        <div className="hero-tag">Flipkart Project Mayhem · Round 2 Submission</div>
+        <h1>PROJECT MAYHEM</h1>
         <h2>Predictive intelligence for Bengaluru's traffic incidents</h2>
         <p className="lede">
           Every disruptive event on the road — a breakdown, a flood, a protest — is a question the city can't
-          answer fast enough: how bad will it get, what should we deploy, and did it actually work? GridLock turns
+          answer fast enough: how bad will it get, what should we deploy, and did it actually work? Project Mayhem turns
           8,173 historical events into a real-time advisory engine that answers all three.
         </p>
         <div className="hero-ctas">
@@ -224,7 +224,7 @@ export const Landing: React.FC = () => {
       <section id="team">
         <div className="section-head reveal">
           <div className="kicker">Our Information</div>
-          <h3>The team behind GridLock</h3>
+          <h3>The team behind Project Mayhem</h3>
           <p>Professional predictive intelligence for Bengaluru traffic incidents.</p>
         </div>
 
@@ -233,12 +233,12 @@ export const Landing: React.FC = () => {
             { name: 'Sneh Kansagara', role: 'AI/ML Engineer (Team Leader)', pos: 'center', scale: 1 },
             { name: 'Akshat Tripathi', role: 'ML & Backend Engineer', pos: 'center', scale: 1 },
             { name: 'Advait Mishra', role: 'Frontend & Backend Engineer', pos: 'center', scale: 1 },
-            { name: 'Priyanshu Jha', role: 'Cloud & MLOps Engineer', pos: '100% 0%', scale: 1.6 },
+            { name: 'Priyanshu Jha', role: 'Cloud & MLOps Engineer', pos: '100% 0%', scale: 1.6, ext: 'png' },
           ].map((member, i) => (
             <div key={i} className="team-card">
               <div className="team-photo">
                 <img
-                  src={`/team/${i + 1}.jpeg`}
+                  src={`/team/${i + 1}.${member.ext || 'jpeg'}`}
                   alt={member.role}
                   style={{ objectPosition: member.pos, transform: `scale(${member.scale})` }}
                 />
@@ -253,8 +253,8 @@ export const Landing: React.FC = () => {
       </section>
 
       <footer>
-        <div className="brand"><span className="dot"></span> GRIDLOCK</div>
-        <p>Flipkart GridLock Round 2 — Predictive intelligence for Bengaluru traffic incidents.</p>
+        <div className="brand"><span className="dot"></span> PROJECT MAYHEM</div>
+        <p>Flipkart Project Mayhem Round 2 — Predictive intelligence for Bengaluru traffic incidents.</p>
         <div className="links">
           <a href="#problem">Problem</a>
           <a href="#solution">Solution</a>

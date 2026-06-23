@@ -34,15 +34,15 @@ export const sessionStore = {
 // ── Session storage keys ──────────────────────────────────────────
 export const SESSION_KEYS = {
   // Live Situation Room
-  LIVE_EVENTS:       'gridlock:live:events',
-  LIVE_FILTERS:      'gridlock:live:filters',
-  LIVE_SELECTED_ID:  'gridlock:live:selectedId',
+  LIVE_EVENTS:       'project-mayhem:live:events',
+  LIVE_FILTERS:      'project-mayhem:live:filters',
+  LIVE_SELECTED_ID:  'project-mayhem:live:selectedId',
 
   // New Advisory
-  NEW_FORM:          'gridlock:new:form',
-  NEW_IS_STRETCH:    'gridlock:new:isStretch',
-  NEW_ADVISORY:      'gridlock:new:advisory',
+  NEW_FORM:          'project-mayhem:new:form',
+  NEW_IS_STRETCH:    'project-mayhem:new:isStretch',
+  NEW_ADVISORY:      'project-mayhem:new:advisory',
 
   // Outcomes Log
-  OUTCOMES_LOG:      'gridlock:outcomes:log',
+  OUTCOMES_LOG:      'project-mayhem:outcomes:log',
 } as const;

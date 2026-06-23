@@ -70,17 +70,42 @@ const createDBPulseIcon = (color: string) => {
 };
 
 
+const createBlockedIcon = () => {
+  return L.divIcon({
+    className: 'blocked-marker-wrapper',
+    html: `<div style="width: 12px; height: 12px; background: var(--status-warning); border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>`,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6],
+    popupAnchor: [0, -6],
+  });
+};
+
+const createBarricadeIcon = () => {
+  return L.divIcon({
+    className: 'barricade-marker-wrapper',
+    html: `<div style="width: 22px; height: 22px; background: var(--status-danger); border-radius: 4px; border: 2px solid #fff; box-shadow: 0 0 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-size: 12px; line-height: 1;">🚧</div>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+    popupAnchor: [0, -11],
+  });
+};
+
 const BENGALURU_CENTER: [number, number] = [12.9716, 77.5946];
 
-const MapController: React.FC<{ advisory: Advisory | null }> = ({ advisory }) => {
+const MapBoundsFocus: React.FC<{ coords: [number, number][] }> = ({ coords }) => {
   const map = useMap();
   useEffect(() => {
-    if (advisory?.latitude && advisory?.longitude) {
-      map.flyTo([advisory.latitude, advisory.longitude], 14, { duration: 0.7 });
+    if (coords.length > 0) {
+      const bounds = L.latLngBounds(coords);
+      if (coords.length === 1) {
+        map.flyTo(coords[0], 14, { duration: 0.7 });
+      } else {
+        map.fitBounds(bounds, { padding: [40, 40], animate: true, duration: 0.7, maxZoom: 16 });
+      }
     } else {
       map.flyTo(BENGALURU_CENTER, 11, { duration: 0.7 });
     }
-  }, [advisory, map]);
+  }, [coords.map(c => `${c[0]},${c[1]}`).join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
 };
 
@@ -101,6 +126,7 @@ export const Dashboard: React.FC = () => {
   });
 
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [showBlocked, setShowBlocked] = useState(true);
 
   const { data: eventsData, loading: eventsLoading, error: eventsError } = useEvents(filters);
   const { data: advisoryData, loading: advLoading, error: advError } = useAdvisory(selectedEventId);
@@ -142,6 +168,16 @@ export const Dashboard: React.FC = () => {
   const baseRadiusM = advisoryData?.footprint_radius_km
     ? Math.min(advisoryData.footprint_radius_km * 1000, 800)
     : 0;
+
+  const blockedCoords = advisoryData?.routing?.blocked_nodes_coordinates ?? [];
+  const barricadeCoord = advisoryData?.recommended_barricade_coordinates;
+  const visibleBlockedCoords = blockedCoords.slice(0, 15);
+  
+  const allMapCoords: [number, number][] = advisoryData ? [
+    [advisoryData.latitude, advisoryData.longitude],
+    ...(showBlocked ? visibleBlockedCoords : []),
+    ...(showBlocked && barricadeCoord ? [barricadeCoord] : [])
+  ] : [];
 
   return (
     <div style={{ display: 'flex', gap: 'var(--space-4)', height: '100%', overflow: 'hidden' }}>
@@ -211,7 +247,7 @@ export const Dashboard: React.FC = () => {
             attributionControl={false}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <MapController advisory={advisoryData ?? null} />
+            <MapBoundsFocus coords={allMapCoords} />
             {advisoryData && (
               <>
                 {/* Pulsing incident marker */}
@@ -241,6 +277,34 @@ export const Dashboard: React.FC = () => {
                     }}
                   />
                 ))}
+
+                {/* Blocked nodes */}
+                {showBlocked && visibleBlockedCoords.map((pos, idx) => (
+                  <Marker
+                    key={`blocked-${idx}`}
+                    position={pos}
+                    icon={createBlockedIcon()}
+                  >
+                    <Popup>
+                      <div>
+                        🚧 <strong>Affected Road</strong><br />
+                        Predicted disruption from this incident.
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+
+                {/* Recommended Barricade */}
+                {showBlocked && barricadeCoord && (
+                  <Marker position={barricadeCoord} icon={createBarricadeIcon()}>
+                    <Popup>
+                      <div>
+                        👮 <strong>Recommended Control Point</strong><br />
+                        Suggested officer deployment location.
+                      </div>
+                    </Popup>
+                  </Marker>
+                )}
               </>
             )}
           </MapContainer>
@@ -272,6 +336,69 @@ export const Dashboard: React.FC = () => {
               </>
             )}
           </div>
+
+          {/* Legend */}
+          {advisoryData && (
+            <div 
+              style={{
+                position: 'absolute',
+                bottom: '12px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 1000,
+                background: 'rgba(0, 0, 0, 0.75)',
+                padding: '6px 16px',
+                borderRadius: 'var(--radius-full, 24px)',
+                backdropFilter: 'blur(4px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '16px',
+                fontSize: '11px',
+                color: '#fff',
+                pointerEvents: 'none',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ color: riskColorRaw, fontSize: '14px', lineHeight: 1 }}>●</span> Incident
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ color: 'var(--status-warning)', fontSize: '14px', lineHeight: 1 }}>●</span> Blocked Road
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '12px', lineHeight: 1 }}>🚧</span> Rec. Barricade
+              </div>
+            </div>
+          )}
+
+          {/* Toggle UI */}
+          {advisoryData && (
+            <div 
+              style={{
+                position: 'absolute',
+                top: '12px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 1000,
+                background: 'rgba(0, 0, 0, 0.65)',
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-md)',
+                backdropFilter: 'blur(4px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#fff', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                <input 
+                  type="checkbox" 
+                  checked={showBlocked} 
+                  onChange={(e) => setShowBlocked(e.target.checked)} 
+                  style={{ accentColor: riskColorRaw }}
+                />
+                Show Blocked & Barricades
+              </label>
+            </div>
+          )}
         </div>
 
         {!selectedEventId && (

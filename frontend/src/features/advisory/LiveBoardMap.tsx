@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Circle, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -63,7 +63,25 @@ const createLBMIcon = (color: string) => {
   });
 };
 
+const createBlockedIcon = () => {
+  return L.divIcon({
+    className: 'blocked-marker-wrapper',
+    html: `<div style="width: 12px; height: 12px; background: var(--status-warning); border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>`,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6],
+    popupAnchor: [0, -6],
+  });
+};
 
+const createBarricadeIcon = () => {
+  return L.divIcon({
+    className: 'barricade-marker-wrapper',
+    html: `<div style="width: 22px; height: 22px; background: var(--status-danger); border-radius: 4px; border: 2px solid #fff; box-shadow: 0 0 6px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-size: 12px; line-height: 1;">🚧</div>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+    popupAnchor: [0, -11],
+  });
+};
 interface LiveEvent {
   id: string;
   advisory: Advisory;
@@ -75,17 +93,28 @@ interface LiveBoardMapProps {
   onMarkerClick: (id: string) => void;
 }
 
-const BoundsUpdater: React.FC<{ events: LiveEvent[] }> = ({ events }) => {
+const BoundsUpdater: React.FC<{ events: LiveEvent[], showBlocked: boolean }> = ({ events, showBlocked }) => {
   const map = useMap();
   useEffect(() => {
     if (events.length === 0) return;
-    const bounds: [number, number][] = events
-      .filter(ev => ev.advisory.latitude != null && ev.advisory.longitude != null)
-      .map(ev => [ev.advisory.latitude, ev.advisory.longitude]);
+    const bounds: [number, number][] = [];
+    events.forEach(ev => {
+      if (ev.advisory.latitude != null && ev.advisory.longitude != null) {
+        bounds.push([ev.advisory.latitude, ev.advisory.longitude]);
+      }
+      if (showBlocked) {
+        const blocked = ev.advisory.routing?.blocked_nodes_coordinates ?? [];
+        bounds.push(...blocked.slice(0, 15));
+        if (ev.advisory.recommended_barricade_coordinates) {
+          bounds.push(ev.advisory.recommended_barricade_coordinates);
+        }
+      }
+    });
+
     if (bounds.length > 0) {
       map.fitBounds(bounds, { maxZoom: 14, padding: [50, 50] });
     }
-  }, [events, map]);
+  }, [events, map, showBlocked]);
   return null;
 };
 
@@ -100,6 +129,7 @@ const getColors = () => {
 
 export const LiveBoardMap: React.FC<LiveBoardMapProps> = ({ events, onMarkerClick }) => {
   const COLORS = React.useMemo(() => getColors(), []);
+  const [showBlocked, setShowBlocked] = useState(true);
   
   const riskColor = (prob: number) =>
     prob >= 0.7 ? COLORS.danger : prob >= 0.4 ? COLORS.warning : COLORS.success;
@@ -143,7 +173,7 @@ const riskLabel = (prob: number) =>
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={19}
         />
-        <BoundsUpdater events={events} />
+        <BoundsUpdater events={events} showBlocked={showBlocked} />
 
         {events.map((ev) => {
           const a = ev.advisory;
@@ -178,6 +208,30 @@ const riskLabel = (prob: number) =>
                     opacity: 0.5,
                   }}
                 />
+              )}
+
+              {/* Blocked nodes */}
+              {showBlocked && (a.routing?.blocked_nodes_coordinates ?? []).slice(0, 15).map((pos, idx) => (
+                <Marker key={`${ev.id}-blocked-${idx}`} position={pos} icon={createBlockedIcon()}>
+                  <Popup>
+                    <div>
+                      🚧 <strong>Affected Road</strong><br />
+                      Predicted disruption from this incident.
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+
+              {/* Recommended Barricade */}
+              {showBlocked && a.recommended_barricade_coordinates && (
+                <Marker position={a.recommended_barricade_coordinates} icon={createBarricadeIcon()}>
+                  <Popup>
+                    <div>
+                      👮 <strong>Recommended Control Point</strong><br />
+                      Suggested officer deployment location.
+                    </div>
+                  </Popup>
+                </Marker>
               )}
             </React.Fragment>
           );
@@ -223,6 +277,69 @@ const riskLabel = (prob: number) =>
           </div>
         )}
       </div>
+
+      {/* Legend */}
+      {events.length > 0 && (
+        <div 
+          style={{
+            position: 'absolute',
+            bottom: '12px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            background: 'rgba(0, 0, 0, 0.75)',
+            padding: '6px 16px',
+            borderRadius: 'var(--radius-full, 24px)',
+            backdropFilter: 'blur(4px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '16px',
+            fontSize: '11px',
+            color: '#fff',
+            pointerEvents: 'none',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: 'var(--status-danger)', fontSize: '14px', lineHeight: 1 }}>●</span> Incident
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: 'var(--status-warning)', fontSize: '14px', lineHeight: 1 }}>●</span> Blocked Road
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '12px', lineHeight: 1 }}>🚧</span> Rec. Barricade
+          </div>
+        </div>
+      )}
+
+      {/* Toggle UI */}
+      {events.length > 0 && (
+        <div 
+          style={{
+            position: 'absolute',
+            top: '12px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            background: 'rgba(0, 0, 0, 0.65)',
+            padding: '4px 12px',
+            borderRadius: 'var(--radius-md)',
+            backdropFilter: 'blur(4px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#fff', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <input 
+              type="checkbox" 
+              checked={showBlocked} 
+              onChange={(e) => setShowBlocked(e.target.checked)} 
+              style={{ accentColor: 'var(--status-danger)' }}
+            />
+            Show Blocked & Barricades
+          </label>
+        </div>
+      )}
     </div>
   );
 };
